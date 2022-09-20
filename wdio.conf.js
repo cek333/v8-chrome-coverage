@@ -26,9 +26,7 @@ exports.config = {
     //     './test/specs/**/*.js'
     // ],
     specs: [
-      [
         './test/specs/**/*.js'
-      ]
     ],
     // Patterns to exclude.
     exclude: [
@@ -202,8 +200,9 @@ exports.config = {
      * @param {Array.<String>} specs        List of spec file paths that are to be run
      * @param {Object}         browser      instance of created browser/device session
      */
-    // before: function (capabilities, specs) {
-    // },
+    before: function (capabilities, specs) {
+      return helpers.startCoverage();
+    },
     /**
      * Runs before a WebdriverIO command gets executed.
      * @param {String} commandName hook command name
@@ -215,9 +214,8 @@ exports.config = {
      * Hook that gets executed before the suite starts
      * @param {Object} suite suite details
      */
-    beforeSuite: function (suite) {
-      helpers.startCoverage();
-    },
+    // beforeSuite: function (suite) {
+    // },
     /**
      * Function to be executed before a test (in Mocha/Jasmine) starts.
      */
@@ -254,7 +252,7 @@ exports.config = {
      * @param {Object} suite suite details
      */
     afterSuite: function (suite) {
-      helpers.dumpCoverage();
+      return helpers.dumpCoverage();
     },
     /**
      * Runs after a WebdriverIO command gets executed

@@ -17,39 +17,46 @@ const makeFolder = () => {
 module.exports = {
 
   startCoverage() {
-    browser.cdp('Profiler', 'enable');
+    // https://github.com/webdriverio-boneyard/wdio-devtools-service/issues/8
+    return new Promise(function(resolve) {
+      process.nextTick(async function() {
+        await browser.cdp('Profiler', 'enable');
 
-    /**
-     * start test coverage profiler
-     */
-    browser.cdp('Profiler', 'startPreciseCoverage', {
-      callCount : true,
-      detailed  : true,
+        /**
+         * start test coverage profiler
+         */
+        await browser.cdp('Profiler', 'startPreciseCoverage', {
+          callCount : true,
+          detailed  : true,
+        });
+
+        makeFolder();
+
+        console.log('Coverage enabled');
+
+        resolve();
+      });
     });
-
-    console.log('Coverage enabled');
   },
 
-  dumpCoverage() {
+  async dumpCoverage() {
     /**
      * capture test coverage
      */
-    const c8coverage = browser.cdp('Profiler', 'takePreciseCoverage');
-    if (c8coverage.result) {
-      const coverage = c8coverage.result.filter((res) => res.url !== '')
-      console.log(coverage)
-    } else {
+    const c8coverage = await browser.cdp('Profiler', 'takePreciseCoverage');
+    if (!c8coverage.result) {
       console.log('*** NO COVERAGE DATA ***');
     }
     
-    makeFolder();
-
     const filename = path.join(v8CoverageFolder, `coverage-${Date.now().toString()}.json`);
     //   const str = JSON.stringify(c8coverage, null, 2) + '\n'
     const str = JSON.stringify(c8coverage);
     fs.writeFileSync(filename, str, 'utf8');
 
     console.log(`writing coverage to ${filename}`);
+  },
+
+  stopCoverage() {
     return browser.cdp('Profiler', 'stopPreciseCoverage');
   },
 
