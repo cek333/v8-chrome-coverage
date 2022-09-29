@@ -31,5 +31,5 @@ RUN export DEBIAN_FRONTEND=noninteractive \
 EXPOSE 8080
 
 ENTRYPOINT [ "npm", "run" ]
-CMD [ "ci:beforesuite" ]
+CMD [ "ci:before" ]
 # CMD [ "npm", "run", "start" ]
