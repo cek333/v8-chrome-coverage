@@ -6,11 +6,13 @@
     "scripts": {
         "pretest": "rm -rf .v8-coverage coverage && mkdir -p coverage/tmp",
         "start": "http-server",
+        "test": "wdio run wdio.conf.js",
         "test:before": "wdio run wdio.conf.before.js",
         "test:beforesuite": "wdio run wdio.conf.beforesuite.js",
         "wdio": "wdio run wdio.conf.js",
         "ci:before": "start-test 8080 test:before",
         "ci:beforesuite": "start-test 8080 test:beforesuite",
+        "ci": "start-test 8080 test",
         "postci": "node scripts/mergeAndResolveUrls.js .v8-coverage coverage/tmp/coverage.json `pwd`/public && c8 report --reporter=lcov"
     },
     "repository": {
